@@ -1,0 +1,60 @@
+#%Module1.0
+##
+## Python/gnu modulefile
+##
+proc ModulesHelp { } {
+        global version
+
+        puts stderr "\tGnu complied DEV version of Scalable Python environment."
+        puts stderr "\tVersion: $version"
+        puts stderr "\tModifies: LD_LIBRARY_PATH, MANPATH, PATH\n"
+}
+
+# ensure that no other Python module is loaded
+conflict python
+
+# Switch PrgEnv to gnu if necessary
+set confl_prgenvs [list "PrgEnv-intel" "PrgEnv-cray"]
+foreach prgenv $confl_prgenvs {
+  if { [ is-loaded $prgenv] } {
+    module switch $prgenv PrgEnv-gnu
+  }
+}
+
+set     version         "2.6.7-gnu"
+
+# print some information when loading
+if { [ module-info mode load ] } {
+  puts stderr ""
+  puts stderr "\tLoading Python version $version"
+  puts stderr "\tExternal packages included:"
+  puts stderr "\tNumpy, Scipy" 
+  puts stderr ""
+  puts stderr "\tNote: Programming environment is now PrgEnv-gnu"
+  puts stderr ""
+}
+
+module-whatis   "Load DEV version of Scalable Python environment"
+module-whatis   "Version:  2.6.7"
+module-whatis   "Modifies: LD_LIBRARY_PATH, MANPATH, PATH"
+
+# for Tcl script use only
+set     prog_root       "/homeappl/home/louhivuo/appl_sisu/scalable-python-dev"
+
+# NumPy and Scipy
+prepend-path    PYTHONPATH  "/homeappl/home/louhivuo/appl_sisu/numpy-1.10.4/haswell/lib/python/"
+prepend-path    PYTHONPATH  "/homeappl/home/louhivuo/appl_sisu/scipy-0.16.1/haswell/lib/python/"
+#prepend-path    PYTHONPATH  "/appl/opt/python/numpy/1.8.1/haswell/lib/python/"
+#prepend-path    PYTHONPATH  "/appl/opt/python/scipy/0.14.0/haswell/lib/python/"
+
+prepend-path    MANPATH         "$prog_root/share/man"
+prepend-path    PATH            "$prog_root/bin"
+prepend-path    LD_LIBRARY_PATH "$prog_root/lib"
+
+setenv PYTHONNOUSERSITE 1
+
+# Version independent Python packages
+# set    extra_root       "/fs/local/linux26_x86_64/opt/python/extra-packages"
+# append-path     PYTHONPATH      "$extra_root/lib/python"
+# append-path     PYTHONPATH      "$extra_root/lib64/python"
+

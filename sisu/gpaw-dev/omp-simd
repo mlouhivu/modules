@@ -1,0 +1,63 @@
+#%Module1.0
+##
+## GPAW modulefile
+##
+proc ModulesHelp { } {
+        global gpaw_version
+
+        puts stderr "\tThis loads GPAW real-space DFT program"
+        puts stderr "\tVersion $gpaw_version"
+        puts stderr "\tModifies: PYTHONPATH, PATH, GPAW_PYTHON\n"
+}
+
+# define software versions and basedir
+set  gpaw_version         "omp-simd"
+set  ase_version          "git-b4522c89"
+set  gpaw_setups_version  "0.9.11271"
+set  libxc_version        "2.1.3"
+#set  scapy_version        "1.1"
+set  base                 "/homeappl/home/louhivuo/appl_sisu/gpaw-dev-$gpaw_version"
+
+# whatis information
+module-whatis   "Load GPAW"
+module-whatis   "Version: $gpaw_version"
+module-whatis   "Modifies: PYTHONPATH, PATH, GPAW_PYTHON"
+
+# ensure that no other GPAW module is loaded
+conflict gpaw
+
+# switch to PrgEnv-gnu if necessary
+set confl_prgenvs [list "PrgEnv-cray" "PrgEnv-intel"]
+foreach prgenv $confl_prgenvs {
+  if { [ is-loaded $prgenv] } {
+    module swap $prgenv PrgEnv-gnu
+  }
+}
+
+# Load ASE, setups etc. when loading or switching to
+if { [ module-info mode load ] || [ module-info mode switch2 ] } {
+  puts stderr ""
+  puts stderr "\tLoading GPAW version $gpaw_version"
+  module load ase-dev/$ase_version
+  module load gpaw-setups/$gpaw_setups_version
+  module load cray-hdf5-parallel
+  module load libxc/$libxc_version
+#  module load scalable-python/$scapy_version
+  module load python/2.7.13-gnu620
+}
+
+# Unload ASE, setups, etc. when loading or switching from
+if { [ module-info mode remove ] || [ module-info mode switch1 ] } {
+  module unload ase
+  module unload gpaw-setups
+  module unload cray-hdf5-parallel
+  module unload libxc
+#  module unload scalable-python
+  module unload python
+}
+
+# set environmental variables
+prepend-path  PYTHONPATH   "$base/lib/python"
+prepend-path  PATH         "$base/bin/"
+setenv        GPAW_PYTHON  "$base/bin/gpaw-python"
+

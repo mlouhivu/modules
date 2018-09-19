@@ -1,0 +1,38 @@
+#%Module1.0
+##
+## ASE modulefile
+##
+proc ModulesHelp { } {
+        global ase_version
+
+        puts stderr "\tThis loads the Atomic Simulation Environment."
+        puts stderr "\tVersion: $ase_version"
+        puts stderr "\t  + commits in gitlab.com/ase/ase/merge_requests/309"
+        puts stderr "\tModifies: PATH, PYTHONPATH\n"
+}
+
+# ensure that no other ASE module is loaded
+conflict ase
+
+# define software versions and basedir
+set git_commit   "6441513e"
+set ase_version  "git (commit $git_commit)"
+set prog_root    "/appl/nano/ase/git-${git_commit}"
+
+# whatis info
+module-whatis   "Load the Atomic Simulation Environment"
+module-whatis   "Version: $ase_version"
+module-whatis   "Modifies: PATH, PYTHONPATH"
+
+if { [ module-info mode load ] } {
+  puts stderr ""
+  puts stderr "\tLoading Atomic Simulation Environment version $ase_version"
+  puts stderr ""
+  puts stderr "\t  Note: newer versions of ASE are available as part of Scalable"
+  puts stderr "\t        Python installations (module load scalable-python)"
+}
+
+# set environmental variables
+prepend-path  PYTHONPATH  "$prog_root/lib/python"
+prepend-path  PATH        "$prog_root/bin/"
+

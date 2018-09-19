@@ -1,0 +1,34 @@
+#%Module1.0
+##
+## ASE modulefile
+##
+proc ModulesHelp { } {
+        global ase_version
+
+        puts stderr "\tThis loads the Atomic Simulation Environment."
+        puts stderr "\tVersion: $ase_version"
+        puts stderr "\tModifies: PATH, PYTHONPATH\n"
+}
+
+# ensure that no other ASE module is loaded
+#conflict ase
+
+# define software versions and basedir
+set git_commit   "88f25faf"
+set ase_version  "3.11.0"
+set prog_root    "~/appl_sisu/ase-dev-${ase_version}"
+
+# whatis info
+module-whatis   "Load the Atomic Simulation Environment"
+module-whatis   "Version: $ase_version"
+module-whatis   "Modifies: PATH, PYTHONPATH"
+
+if { [ module-info mode load ] } {
+  puts stderr ""
+  puts stderr "\tLoading Atomic Simulation Environment version $ase_version"
+}
+
+# set environmental variables
+prepend-path  PYTHONPATH  "$prog_root/lib/python"
+prepend-path  PATH        "$prog_root/bin/"
+

@@ -1,0 +1,59 @@
+#%Module1.0
+##
+## Scalable Python modulefile
+##
+proc ModulesHelp { } {
+        global scapyversion
+		global pyversion
+
+        puts stderr "\tScalable Python environment built with GNU compilers."
+        puts stderr "\tVersion: $scapyversion (based on Python $pyversion)"
+        puts stderr "\tModifies: LD_LIBRARY_PATH, MANPATH, PATH, PYTHONPATH"
+		puts stderr "\tSets: PYTHONNOUSERSITE\n"
+}
+
+# define software versions and basedir
+set     prog_root       "/appl/opt/python/scalable-python-1.1"
+set     scapyversion    "1.1"
+set     pyversion       "2.6.7"
+set     numpyversion    "1.10.4"
+set     scipyversion    "0.16.1"
+
+# ensure that no other Python module is loaded
+conflict python
+
+# switch PrgEnv to gnu if necessary
+set confl_prgenvs [list "PrgEnv-intel" "PrgEnv-cray"]
+foreach prgenv $confl_prgenvs {
+  if { [ is-loaded $prgenv] } {
+    module switch $prgenv PrgEnv-gnu
+  }
+}
+
+# print some information when loading
+if { [ module-info mode load ] } {
+  puts stderr ""
+  puts stderr "\tLoading Scalable Python (v$scapyversion)."
+  puts stderr "\t  External modules included:"
+  puts stderr "\t  Numpy ($numpyversion), Scipy ($scipyversion)" 
+  puts stderr ""
+  puts stderr "\tNote: Programming environment is now PrgEnv-gnu"
+  puts stderr ""
+}
+
+# whatis information
+module-whatis   "Load Scalable Python environment"
+module-whatis   "Version:  $scapyversion (based on Python $pyversion)"
+module-whatis   "Modifies: LD_LIBRARY_PATH, MANPATH, PATH, PYTHONPATH"
+module-whatis   "Sets: PYTHONNOUSERSITE"
+
+# set environmental variables
+prepend-path    PATH            "$prog_root/bin"
+prepend-path    MANPATH         "$prog_root/share/man"
+prepend-path    LD_LIBRARY_PATH "$prog_root/lib"
+# NumPy and Scipy
+prepend-path    PYTHONPATH  "/appl/opt/python/numpy/$numpyversion/haswell/lib/python/"
+prepend-path    PYTHONPATH  "/appl/opt/python/scipy/$scipyversion/haswell/lib/python/"
+# do not load user's own site-packages
+setenv PYTHONNOUSERSITE 1
+

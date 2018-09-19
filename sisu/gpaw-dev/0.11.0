@@ -1,0 +1,72 @@
+#%Module1.0
+##
+## GPAW modulefile
+##
+proc ModulesHelp { } {
+        global version
+
+        puts stderr "\tThis loads GPAW real-space DFT program"
+        puts stderr "\tVersion $version"
+        puts stderr "\tModifies: PYTHONPATH, PATH, GPAW_PYTHON\n"
+}
+
+set gpaw_version "0.11.0"
+set ase_version "3.9.1"
+set gpaw_setups_version "0.9.11271"
+
+module-whatis   "Load GPAW"
+module-whatis   "Version: $gpaw_version"
+module-whatis   "Modifies: PYTHONPATH, PATH, GPAW_PYTHON"
+
+conflict gpaw
+
+# Load ASE and setups when loading or switching to
+if { [ module-info mode load ] } {
+  puts stderr ""
+  puts stderr "\tLoading GPAW version $gpaw_version"
+  module load ase/$ase_version
+  module load gpaw-setups/$gpaw_setups_version
+  module load cray-hdf5-parallel
+  module load libxc
+  module load scalable-python-dev
+}
+if { [ module-info mode switch2] } {
+  puts stderr ""
+  puts stderr "\tLoading GPAW version $gpaw_version"
+  module load ase/$ase_version
+  module load gpaw-setups/$gpaw_setups_version
+  module load cray-hdf5-parallel
+  module load libxc
+  module load scalable-python-dev
+}
+
+# Unload ASE and setups when loading or switching from
+if { [ module-info mode remove] } {
+  module unload ase
+  module unload gpaw-setups
+  module unload cray-hdf5-parallel
+  module unload libxc
+  module unload scalable-python-dev
+}
+if { [ module-info mode switch1] } {
+  module unload ase
+  module unload gpaw-setups
+  module unload cray-hdf5-parallel
+  module unload libxc
+  module unload scalable-python-dev
+}
+
+# Change PrgEnv to gnu
+set confl_prgenvs [list "PrgEnv-cray" "PrgEnv-intel"]
+foreach prgenv $confl_prgenvs {
+  if { [ is-loaded $prgenv] } {
+    module swap $prgenv PrgEnv-gnu
+  }
+}
+
+set base "/homeappl/home/louhivuo/appl_sisu/gpaw-dev-0.11.0"
+
+prepend-path PYTHONPATH  "$base/lib/python"
+prepend-path PATH        "$base/bin/"
+setenv       GPAW_PYTHON "$base/bin/gpaw-python"
+

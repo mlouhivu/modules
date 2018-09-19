@@ -1,0 +1,30 @@
+#%Module1.0
+##
+## Python/gnu modulefile
+##
+proc ModulesHelp { } {
+        global version
+
+        puts stderr "\tIntel Distributed Python"
+        puts stderr "\tVersion: $version"
+        puts stderr "\tModifies: LD_LIBRARY_PATH, MANPATH, PATH\n"
+}
+
+# ensure that no other Python module is loaded
+conflict python
+
+set     version         "2.7.20150803_184913"
+
+module-whatis   "Intel Distributed Python"
+module-whatis   "Version:  $version"
+module-whatis   "Modifies: LD_LIBRARY_PATH, MANPATH, PATH"
+
+# for Tcl script use only
+set     prog_root       "/homeappl/home/louhivuo/appl_sisu/intel-python/${version}"
+
+prepend-path    MANPATH         "$prog_root/share/man"
+prepend-path    PATH            "$prog_root/bin"
+prepend-path    LD_LIBRARY_PATH "$prog_root/lib"
+
+setenv PYTHONPATH "$prog_root"
+

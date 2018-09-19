@@ -1,0 +1,24 @@
+#%Module1.0
+##
+## Libxc modulefile
+##
+proc ModulesHelp { } {
+        global version
+
+        puts stderr "\tAutotools."
+        puts stderr "\tVersion: $version"
+        puts stderr "\tModifies: PATH\n"
+}
+
+# define software version and basedir
+set version "2016.11"
+set base "/homeappl/home/louhivuo/appl_sisu/autotools"
+
+# whatis information
+module-whatis "Load autotools"
+module-whatis "Version:  $version"
+module-whatis "Modifies: PATH"
+
+# set environmental variables
+prepend-path PATH "$base/bin"
+

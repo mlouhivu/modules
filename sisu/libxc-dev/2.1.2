@@ -1,0 +1,26 @@
+#%Module1.0
+##
+## Libxc modulefile
+##
+proc ModulesHelp { } {
+        global version
+
+        puts stderr "\tLibxc exchange-correlation functional library."
+        puts stderr "\tVersion: $version"
+        puts stderr "\tModifies: LD_LIBRARY_PATH"
+		puts stderr "\tSets: LIBXCDIR\n"
+}
+
+# define software version and basedir
+set version "2.1.2"
+set base "/homeappl/home/louhivuo/appl_sisu/libxc-${version}"
+
+# whatis information
+module-whatis "Load libxc library"
+module-whatis "Version:  $version"
+module-whatis "Modifies: LD_LIBRARY_PATH"
+
+# set environmental variables
+append-path LD_LIBRARY_PATH "$base/lib"
+setenv LIBXCDIR "$base"
+
