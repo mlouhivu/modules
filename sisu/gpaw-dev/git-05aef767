@@ -1,0 +1,64 @@
+#%Module1.0
+##
+## GPAW modulefile
+##
+proc ModulesHelp { } {
+        global gpaw_version
+
+        puts stderr "\tThis loads GPAW real-space DFT program"
+        puts stderr "\tVersion: $gpaw_version"
+        puts stderr "\tModifies: PYTHONPATH, PATH, GPAW_PYTHON\n"
+}
+
+# define software versions and basedir
+set  git_commit           "05aef767"
+set  gpaw_version         "git (commit $git_commit)"
+set  gpaw_setups_version  "0.9.20000"
+set  libxc_version        "4.0.2"
+set  base                 "/appl/nano/gpaw/git-${git_commit}"
+set  python_base          "/appl/opt/python/scalable-python-2017-10"
+set  python_bundle        "git-341e9793"
+
+# whatis information
+module-whatis   "Load GPAW"
+module-whatis   "Version: $gpaw_version"
+module-whatis   "Modifies: PYTHONPATH, PATH, GPAW_PYTHON"
+
+# ensure that no other GPAW module is loaded
+conflict gpaw
+
+# switch to PrgEnv-gnu if necessary
+set confl_prgenvs [list "PrgEnv-cray" "PrgEnv-intel"]
+foreach prgenv $confl_prgenvs {
+  if { [ is-loaded $prgenv] } {
+    module swap $prgenv PrgEnv-gnu
+  }
+}
+
+# Load ASE, setups etc. when loading or switching to
+if { [ module-info mode load ] || [ module-info mode switch2 ] } {
+  puts stderr ""
+  puts stderr "\tLoading GPAW version $gpaw_version"
+  module load gpaw-setups/$gpaw_setups_version
+  module load cray-hdf5-parallel
+  module load libxc/$libxc_version
+}
+
+# Unload ASE, setups, etc. when loading or switching from
+if { [ module-info mode remove ] || [ module-info mode switch1 ] } {
+  module unload gpaw-setups
+  module unload cray-hdf5-parallel
+  module unload libxc
+}
+
+# set environmental variables
+prepend-path  PYTHONPATH   "$base/lib/python2.7/site-packages"
+prepend-path  PATH         "$base/bin"
+setenv        GPAW_PYTHON  "$base/bin/gpaw-python"
+
+prepend-path  PATH             "$python_base/bin"
+prepend-path  MANPATH          "$python_base/share/man"
+prepend-path  LD_LIBRARY_PATH  "$python_base/lib"
+setenv        PYTHONUSERBASE   "$python_base/bundle/$python_bundle"
+prepend-path  PATH             "$python_base/bundle/$python_bundle/bin"
+
