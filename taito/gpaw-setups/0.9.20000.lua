@@ -1,0 +1,14 @@
+-- This is the lua module file for GPAW setups
+
+local pkgVersion = '0.9.20000'
+local install_root = '/appl/nano/gpaw/setups'
+
+help([[
+        This loads the GPAW setups.
+        Version ]] .. pkgVersion .. [[
+
+        Modifies: GPAW_SETUP_PATH
+]])
+
+setenv('GPAW_SETUP_PATH', pathJoin(install_root, pkgVersion))
+
