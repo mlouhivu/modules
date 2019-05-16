@@ -1,0 +1,24 @@
+#%Module1.0
+##
+## GPAW PAW setups modulefile
+##
+proc ModulesHelp { } {
+        global gpaw_setups_version
+
+        puts stderr "\tThis loads the PAW-setups for the GPAW real-space DFT program"
+        puts stderr "\tVersion: $gpaw_setups_version"
+        puts stderr "\tModifies: GPAW_SETUP_PATH\n"
+}
+
+# define software versions and basedir
+set gpaw_setups_version  0.9.20000
+set base     "/appl/nano/gpaw/setups"
+
+# whatis info
+module-whatis   "Load GPAW setups"
+module-whatis   "Version: $gpaw_setups_version"
+module-whatis   "Modifies: GPAW_SETUP_PATH"
+
+# set environmental variables
+setenv  GPAW_SETUP_PATH  "$base/$gpaw_setups_version/"
+

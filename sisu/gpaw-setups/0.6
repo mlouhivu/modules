@@ -1,0 +1,21 @@
+#%Module1.0
+##
+## GPAW PAW setups modulefile
+##
+proc ModulesHelp { } {
+        global version
+
+        puts stderr "\tThis loads the PAW-setups for the GPAW real-space DFT program"
+        puts stderr "\tVersion $version"
+        puts stderr "\tModifies: GPAW_SETUP_PATH\n"
+}
+
+set version 0.6.6300
+module-whatis   "Load GPAW setups"
+module-whatis   "Version: $version"
+module-whatis   "Modifies: GPAW_SETUP_PATH"
+
+# for Tcl script use only
+set     root_dir       "/appl/nano/gpaw/setups"
+
+setenv          GPAW_SETUP_PATH         "$root_dir/$version/"

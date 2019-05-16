@@ -1,0 +1,27 @@
+#%Module1.0
+##
+## Campos ASE modulefile
+##
+proc ModulesHelp { } {
+        global ase_version
+
+        puts stderr "\tThis loads the Atomic Simulation Environment."
+        puts stderr "\tVersion $ase_version"
+        puts stderr "\tModifies: PATH, PYTHONPATH\n"
+}
+
+set ase_version "3.6.0"
+module-whatis   "Load the Atomic Simulation Environment"
+module-whatis   "Version: $ase_version"
+module-whatis   "Modifies: PATH, PYTHONPATH"
+
+if { [ module-info mode load ] } {
+  puts stderr ""
+  puts stderr "\tLoading Atomic Simulation Environment version $ase_version"
+}
+
+set     prog_root       "/appl/nano/ase/$ase_version"
+
+prepend-path    PYTHONPATH              "$prog_root/lib64/python"
+prepend-path    PATH                    "$prog_root/bin/"
+
